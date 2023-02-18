@@ -1,6 +1,8 @@
 const Coupon = require("../models/coupons");
+const User_Log = require("../models/user_log");
 const Coupon_Log = require("../models/coupon_log");
 
+const { randomUUID } = require('crypto');
 
 
 
@@ -73,20 +75,22 @@ else{
   // console.log('ALLrdftyui');
 }
 
+const uuid=randomUUID();
+
 
   if(coupon.type==='percentage'){
     const total=cartDetails[categoryApply];
     const discount=total*Number(coupon.value)/100;
-    res.status(200).json({status:'Applied',discount:discount});
+    res.status(200).json({status:'Applied',discount:discount,uuid:uuid});
   }
   else if(coupon.type==='fixed amount'){
     if(cartDetails[categoryApply]<Number(coupon.value)){
       const discount=cartDetails[categoryApply];
-      res.status(200).json({status:'Applied',discount:discount});
+      res.status(200).json({status:'Applied',discount:discount,uuid:uuid});
     }
     else{
       const discount=Number(coupon.value);
-      res.status(200).json({status:'Applied',discount:discount});
+      res.status(200).json({status:'Applied',discount:discount,uuid:uuid});
     }
     
   }
@@ -94,26 +98,21 @@ else{
     console.log('free shipping');
   }
 
-  if(coupon.limit===null){
-        userlog(product.email,product.date,product.code);
-        return;
-      }
-      else{
-        coupon.limit-=1;
-        couponAdd({details:coupon});
-        userlog(product.email,product.date,product.code);
-        return;
-      }
+  
+        
+    userlog(product.email,uuid,product.code);
+    return;
+      
 }
 
  
 
 
 
-const userlog=async(userid,date,code)=>{
-  console.log(userid,date,code);
-  today=new Date();
-  const log = await Coupon_Log.create({User_id:userid,Date:date,Coupon_Code:code,Cur_Date:today});
+const userlog=async(email,uuid,code)=>{
+  
+  console.log(email,uuid,code);
+  const log = await User_Log.create({User_email:email,UUID:uuid,Coupon_Code:code});
   return;
 }
 
@@ -273,6 +272,48 @@ const couponAdd = async (toAdd, res) => {
 
 
 
+  
+
+  const couponDeduct = async (product,res)=>{
+    // console.log(product);
+
+    try {
+      const log = await User_Log.findOne({User_email:product.email,UUID:product.uuid});
+      if(log){
+        const date=new Date();
+        const coupon= await Coupon.findOne({code:product.coupon.code});
+        const coupon_log = await Coupon_Log.create({User_email:product.email,Coupon_Code:product.coupon.code,Coupon_Value:product.coupon.value,Date:date});
+        // console.log('coupon',coupon);
+        if(coupon.limit){
+          coupon.limit-=1;
+          couponAdd({details:coupon});
+        }
+        
+        // console.log('coupon',coupon_log);
+
+        // couponAdd({details:coupon});
+      }
+      
+      const del=await User_Log.deleteOne(log);
+      // console.log(log);
+      // res.status(201).json({address});
+
+    }
+    catch(err) {
+      res.status(500).send(err)
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
 
 module.exports.coupon_get = async (toUpdate, res) => {
     coupon(toUpdate,res);
@@ -294,6 +335,11 @@ module.exports.coupon_add = async (toAdd, res) => {
 
 module.exports.coupon_applied = async (product, res) => {
   couponApplied(product,res)
+
+}
+
+module.exports.coupon_deduct = async (product, res) => {
+  couponDeduct(product,res)
 
 }
 

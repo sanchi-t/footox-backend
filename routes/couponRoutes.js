@@ -53,4 +53,9 @@ router.get('/couponApplied', urlencodedParser, function (req, res) {
     couponController.coupon_applied(req.query,res);    
 });
 
+router.post('/couponApplied', urlencodedParser, function (req, res) {
+    // console.log(req.query);
+    couponController.coupon_deduct(req.body,res);    
+});
+
 module.exports=router;

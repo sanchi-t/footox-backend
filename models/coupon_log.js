@@ -4,23 +4,20 @@ const mongoose = require('mongoose');
 
 
 const couponSchema = new mongoose.Schema({
-  User_id: {
+  User_email: {
     type: String,
-  },
-  Product_id: {
-    type: String,
-    unique:false
-
   },
   Date: {
     type: Date,
-    
+    unique:false
+
   },
-  Cur_Date: {
-    type: Date,
-    
-  },
+
+
   Coupon_Code: {
+    type:String,
+  },
+  Coupon_value:{
     type:String,
   }
   

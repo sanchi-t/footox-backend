@@ -4,7 +4,7 @@ const { isEmail } = require('validator');
 
 
 
-const userSchema = new mongoose.Schema({
+const cartSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true,'Please enter a name']
@@ -30,6 +30,6 @@ const userSchema = new mongoose.Schema({
 
 
 
-const Cart = mongoose.model('cart_details', userSchema);
+const Cart = mongoose.model('cart_details', cartSchema);
 
 module.exports = Cart;

@@ -20,10 +20,7 @@ module.exports.checkout_get = async (req, res) => {
 
 module.exports.checkout_post = async (req, res) => {
   const { email,id,quantity } = req.body;
-  // console.log(req.body,email,id,quantity);
-  // const form=req.body.form;
-  // // console.log('form',form.address.place)
-  // if(form.address.save){
+  console.log('checkout post',email,id,quantity);
     try {
       const user = await Cart.updateOne({email:email,"cart.id":id},{$set:{"cart.$.quantity":quantity}});
       // console.log(user,'hiaddress');

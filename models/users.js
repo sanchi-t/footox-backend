@@ -33,11 +33,7 @@ const userSchema = new mongoose.Schema({
     required: false,
     minlength: [10, 'Minimum password length is 10 digits'],
   },
-  description: {
-    type: String,
-    required: [false],
-    
-  }
+  
   
 });
 

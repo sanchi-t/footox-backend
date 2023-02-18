@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 var upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
-        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg" || file.mimetype == "image/webp") {
             cb(null, true);
         } else {
             cb(null, false);
@@ -33,12 +33,21 @@ var upload = multer({
 // User model
 let User = require('../models/models');
 
-router.post('/admin3', upload.array('image', 6), (req, res, next) => {
+router.post('/admin3', upload.array('image', 50), (req, res, next) => {
     const reqFiles = [];
     const url = req.protocol + '://' + req.get('host')
     for (var i = 0; i < req.files.length; i++) {
         reqFiles.push(url + '/public/' + req.files[i].filename)
     }
+    const size = req.body.Sizes;
+    const sizes = [];
+
+    for(var i = 0; i< size.length; i++){
+        console.log(size[i]);
+        sizes[i] = JSON.parse("[" + size[i] + "]");
+    }
+    console.log(sizes);
+    // console.log(size.length);
 
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
@@ -48,13 +57,13 @@ router.post('/admin3', upload.array('image', 6), (req, res, next) => {
         description: req.body.description,
         selling_price: req.body.selling_price,
         original_price:req.body.original_price,
-        Sizes : req.body.Sizes,
+        Sizes : sizes,
         color : req.body.color,
         Status: req.body.Status,
         createdDate: req.body.CurrentDate,
         modifiedDate: req.body.UpdatedDate,
         // Sizes:req.body.Sizes
-        category:req.body.brand,
+        category:req.body.category,
         // featured:req.body.featured,
         image: reqFiles
     });

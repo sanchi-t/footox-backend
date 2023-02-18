@@ -73,7 +73,7 @@ const handleErrors = (err) => {
     // console.log(err);
     Object.values(err.errors).forEach(({ properties }) => {
       // console.log(val);
-      // console.log(properties);
+      console.log('properties');
       errors[properties.path] = properties.message;
     });
   }
@@ -104,6 +104,7 @@ module.exports.signup_post = async (req, res) => {
   catch(err) {
     // console.log('sign sanc',err)
     const errors = handleErrors(err);
+    console.log(errors,'erroes');
     res.status(400).json({ errors });
   }
  
@@ -125,6 +126,7 @@ module.exports.login_post = async (req, res) => {
   } 
   catch (err) {
     const errors = handleErrors(err);
+    console.log('erros',errors);
     res.status(400).json({errors});
   }
 

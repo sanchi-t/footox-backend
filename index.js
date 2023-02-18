@@ -7,6 +7,11 @@ const userRoutes = require('./routes/userRoutes');
 const skuRoutes = require('./routes/skuRoutes1');
 const bannerRoutes = require('./routes/bannerRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
+const addressRoutes = require('./routes/addressRoutes');
+const orderPlacedRoutes = require('./routes/orderPlacedRoutes');
+const orderConfirmedRoutes = require('./routes/orderConfirmedRoutes');
+const csvRoutes=require('./routes/csvRoutes');
+
 // const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 const cookieParser=require('cookie-parser');
 const cors=require('cors');
@@ -14,7 +19,7 @@ const bodyParser = require('body-parser');
 const couponRoutes = require('./routes/couponRoutes');
 const linkRoutes =require('./routes/linkRoutes')
 
-console.log('hi');
+// console.log('hi');
 
 
 app.use(cors({
@@ -47,5 +52,9 @@ app.use(skuRoutes);
 app.use(bannerRoutes);
 app.use(linkRoutes);
 app.use(checkoutRoutes);
+app.use(addressRoutes);
+app.use(orderPlacedRoutes);
+app.use(orderConfirmedRoutes);
+app.use(csvRoutes);
 app.use(cookieParser());
 // app.use(checkUser);
