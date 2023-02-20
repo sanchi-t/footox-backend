@@ -18,29 +18,46 @@ module.exports.checkout_get = async (req, res) => {
  
 }
 
-module.exports.checkout_post = async (req, res) => {
+module.exports.checkout_put = async (req, res) => {
   const { email,id,quantity } = req.body;
-  console.log('checkout post',email,id,quantity);
+  // console.log('checkout post',email,id,quantity);
     try {
-      const user = await Cart.updateOne({email:email,"cart.id":id},{$set:{"cart.$.quantity":quantity}});
-      // console.log(user,'hiaddress');
+      const user = await Cart.updateOne({email:email,"cart.id":id},{$set:{"cart.$.id":id,"cart.$.quantity":quantity}});
+      console.log(user,'hiaddress');
       
       res.status(201).json({ user: user});
     }
     catch(err) {
-      // console.log('sign sanc',err)
+      console.log('sign sanc',err)
       res.status(400).json({ err });
     }
   }
 
+  module.exports.checkout_post = async (req, res) => {
+    const { email,id,quantity } = req.body;
+    // console.log('checkout post',email,id,quantity);
+      try {
+        const user1 = await Cart.updateOne({'email':email},{$pull:{'cart':{'id':id}}});
+        
+        const user = await Cart.updateOne({email:email},{$push:{cart:{"id":id,"quantity":Number(quantity)}}},{upsert:true});
+        console.log(user,'hiaddress');
+        
+        res.status(201).json({ user: user});
+      }
+      catch(err) {
+        console.log('sign sanc',err)
+        res.status(400).json({ err });
+      }
+    }
+
   module.exports.checkout_delete = async (req, res) => {
     const { email,id } = req.body;
-    // console.log(req.body,email,id);
+    // console.log(email,id);
     // const form=req.body.form;
     // // console.log('form',form.address.place)
     // if(form.address.save){
       try {
-        const user = await Cart.findOneAndUpdate({'email':email},{$pull:{cart:{id:id}}},false);
+        const user = await Cart.updateOne({'email':email},{$pull:{'cart':{'id':id}}});
         // console.log(user,'hiaddress');
         
         res.status(201).json({ user: user});

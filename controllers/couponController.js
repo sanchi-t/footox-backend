@@ -321,6 +321,7 @@ module.exports.coupon_get = async (toUpdate, res) => {
 
 
 module.exports.coupon_post = async (toUpdate, res) => {
+  console.log(toUpdate,'coupon_post')
     coupon(toUpdate,res);
  
 }
@@ -328,6 +329,7 @@ module.exports.coupon_post = async (toUpdate, res) => {
 
 
 module.exports.coupon_add = async (toAdd, res) => {
+    console.log(toAdd,'add')
     couponAdd(toAdd,res)
  
 }

@@ -45,6 +45,16 @@ const couponSchema = new mongoose.Schema({
     type: String,
     required: [false],
     
+  },
+  promote: {
+    type: Boolean,
+    required: [false],
+    
+  },
+  title: {
+    type: String,
+    required: [false],
+    
   }
   
 });

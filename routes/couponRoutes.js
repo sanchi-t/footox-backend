@@ -24,6 +24,7 @@ router.post('/coupon', urlencodedParser, function (req, res) {
     const obj=JSON.parse(JSON.stringify(req.body));
     const jsondata= Object.keys(obj)[0];
     const toAdd=JSON.parse((jsondata));
+    console.log('adding',req.body);
     couponController.coupon_add(toAdd,res);
     
 });

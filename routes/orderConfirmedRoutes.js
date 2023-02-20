@@ -3,7 +3,7 @@ const orderConfirmedController=require('../controllers/orderConfirmedController'
 const router = Router();
 
 router.get('/orderConfirmed',orderConfirmedController.order_get);
-router.post('/orderConfirmed',orderConfirmedController.order_post);
+router.post('/orderConfirmed1',orderConfirmedController.order_post);
 router.delete('/orderConfirmed',orderConfirmedController.order_delete);
 
 
