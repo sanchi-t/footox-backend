@@ -1,51 +1,64 @@
-const Order = require("../models/order");
-// const Address = require("../models/address");
+let User = require('../models/order');
+const MongoClient = require("mongodb").MongoClient;
+const mongoose = require("mongoose");
+const dbURI =
+  "mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority";
 
+const client = new MongoClient(dbURI);
+const database = client.db("Footox");
+const users = database.collection("order details");
+var ObjectId = require('mongodb').ObjectID;
 
-
-
-module.exports.order_get = async (req, res) => {
-  const {name,email}=req.query;
-  // console.log(email);
-  try {
-    const address = await Address.findOne({email:email});
-    res.status(201).json({address});
-  }
-  catch(err) {
-    res.status(400).json({ err });
-  }
- 
+exports.order = async (req, res) => {
+  // console.log(req.body);
+    const user = new User({
+        _id: new mongoose.Types.ObjectId(),
+        name_user:req.body.form.name_user,
+        email_user: req.body.form.email_user,
+        mobile_user: req.body.form.mobile_user,
+        name_reciever:req.body.form.name_reciever,
+        email_reciever: req.body.form.email_reciever,
+        mobile_reciever: req.body.form.mobile_reciever,
+        address: req.body.form.address.place,
+        items: req.body.form.items,
+        status:'Order Placed',
+        placed: true,
+        coupon:req.body.form.coupon,
+        total: req.body.form.total,
+    });
+    user.save().then(result => {
+        console.log(result),
+        res.status(201).json({
+            
+            order: {
+                result,
+            }
+        })
+    }).catch(err => {
+        console.log(err),
+            res.status(500).json({
+                error: err
+            });
+    })
 }
+exports.getOrder = async (req, res) => {
+    User.find().then((data) => {
+        // console.log(data);
+      res.status(200).json(data);
+    });
+  };
 
-module.exports.order_post = async (req, res) => {
-    // console.log(req.body.form);
-    const{name_reciever,address,email_reciever,mobile_reciever,name_user,email_user,mobile_user,items,total,coupon}=req.body.form;
-    // console.log(address,email,mobile,items,total,coupon);
-//   const { email,id,quantity } = req.body;
-    try {
-    
+exports.updateOrder = async (req, res) => {
+    console.log(req.body);
+    const filter = { _id: ObjectId(`${req.body.orderid}`) };
 
-      const order = await Order.create({name_user:name_user,email_user:email_user,mobile_user:mobile_user,name_reciever:name_reciever,email_reciever:email_reciever,mobile_reciever:mobile_reciever,address:address.place,items:items,total:total,coupon:coupon,placed:true,status:'Order Placed'});
-      res.status(201).json({ order: order});
+    const toUpdate = {
+        $set: {
+            status: req.body.Status,
+        },
     }
-    catch(err) {
-        // console.log(err,'hudjisk');
-      res.status(400).json({ err });
-    }
-  }
-
-  module.exports.order_delete = async (req, res) => {
-    const { email,id } = req.body;
-      try {
-        const user = await Cart.findOneAndUpdate({'email':email},{$pull:{cart:{id:id}}},false);
-        
-        res.status(201).json({ user: user});
-      }
-      catch(err) {
-        res.status(400).json({ err });
-      }
-    }
-
-
-
-
+    users.updateOne(filter, toUpdate).then((data) => {
+      res.status(200).json(data);
+      console.log(data);
+    });
+  };

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const {OAuth2Client}=require('google-auth-library');
 const { response } = require("express");
 const Cart = require("../models/cart");
+const Address = require("../models/address");
 
 
 const client = new OAuth2Client("907385226953-mc9c2r4j8t9nmne9dch68s65tmkq2gqg.apps.googleusercontent.com");
@@ -34,6 +35,7 @@ const afterVerify=(name,email,username,mobile,description,res )=>{
           let password=email+'907385226953-mc9c2r4j8t9nmne9dch68s65tmkq2gqg.apps.googleusercontent.com';
           const user = await User.create({name,email, password,username,mobile,description });
           const cart = await Cart.create({name,email});
+          const address = await Address.create({name,email});
           const token = createToken(user._id);
           res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
           res.status(201).json({ userid: user._id,username:user.name,token:token,mobile:user.mobile,email:user.email});
@@ -97,6 +99,7 @@ module.exports.signup_post = async (req, res) => {
   try {
     const user = await User.create({name,email, password,username,mobile,description });
     const cart = await Cart.create({name,email});
+    const address = await Address.create({name,email});
     const token = createToken(user._id);
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
     res.status(201).json({ userid: user._id,username:user.name,token:token,mobile:user.mobile,email:user.email});
@@ -146,17 +149,7 @@ module.exports.google_login = async (req, res) => {
     }
   })
 
-  // try {
-  //   const user = await User.login(email, password);
-  //   const token = createToken(user._id);
-  //   res.cookie('jwt', token, { httpOnly: false, maxAge: maxAge * 1000 });
-  //   res.cookie('sanchit','sharma');
-  //   res.status(200).json({ user: user._id, username:user.name,token:token });
-  // } 
-  // catch (err) {
-  //   const errors = handleErrors(err);
-  //   res.status(400).json({errors});
-  // }
+
 
 }
 

@@ -49,8 +49,11 @@ router.post(
   upload.single('CSVFile'),
   csvController.del,
 )
+router.post("/changeStock", csvController.checkout);
 
 router.get("/getStock",csvController.stock);
+
+// router.get("/quantity", csvController.skuid);
 
 router.get('/count', csvController.count1);
 

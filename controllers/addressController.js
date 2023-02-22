@@ -25,7 +25,7 @@ module.exports.address_post = async (req, res) => {
     try {
 
       if(save){
-        const address = await Address.updateOne({email:email},{ $push: {address:place} });
+        const address = await Address.updateOne({email:email},{ $push: {address:place} },{upsert:true});
         console.log(address);
         res.status(201).json({ address: address});
 

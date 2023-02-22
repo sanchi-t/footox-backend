@@ -34,12 +34,12 @@ module.exports.checkout_put = async (req, res) => {
   }
 
   module.exports.checkout_post = async (req, res) => {
-    const { email,id,quantity } = req.body;
-    // console.log('checkout post',email,id,quantity);
+    const { email,id,quantity,price } = req.body;
+    console.log('checkout post',email,id,price);
       try {
         const user1 = await Cart.updateOne({'email':email},{$pull:{'cart':{'id':id}}});
         
-        const user = await Cart.updateOne({email:email},{$push:{cart:{"id":id,"quantity":Number(quantity)}}},{upsert:true});
+        const user = await Cart.updateOne({email:email},{$push:{cart:{"id":id,"quantity":Number(quantity),"price":price}}},{upsert:true});
         console.log(user,'hiaddress');
         
         res.status(201).json({ user: user});
@@ -52,13 +52,13 @@ module.exports.checkout_put = async (req, res) => {
 
   module.exports.checkout_delete = async (req, res) => {
     const { email,id } = req.body;
-    // console.log(email,id);
+    console.log(email,id);
     // const form=req.body.form;
     // // console.log('form',form.address.place)
     // if(form.address.save){
       try {
         const user = await Cart.updateOne({'email':email},{$pull:{'cart':{'id':id}}});
-        // console.log(user,'hiaddress');
+        console.log(user,'hiaddress');
         
         res.status(201).json({ user: user});
       }

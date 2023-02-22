@@ -7,6 +7,7 @@ const router = express.Router();
 // const data1 = require("../Models/models")
 const MongoClient = require("mongodb").MongoClient;
 const mongoose = require("mongoose");
+const { json } = require("body-parser");
 const dbURI =
   "mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority";
 
@@ -122,12 +123,9 @@ exports.create = async (req, res) => {
                       updatedAt: new Date(),
                     },
                   };
-                  const users = Stock.updateOne(
-                    { SKUId: skuid },
-                    user1,
-                    { upsert: true },
-                    
-                  );
+                  const users = Stock.updateOne({ SKUId: skuid }, user1, {
+                    upsert: true,
+                  });
                   // // console.log('try3', totalRecords.productId);
                 }
               });
@@ -176,11 +174,69 @@ exports.stock = async (req, res) => {
     res.status(200).json(data);
   });
 };
+
+// exports.skuid = async(req, res)=>{
+//   const items = req.body.items;
+//   console.log(items);
+//   for(let i = 0; i< items.length; i++){
+
+//     const skuid = items[i].id;
+//   // const user = {
+//   //   $set: {
+//   //     Quantity: Quantity- items[i].Quantity,
+//   //   },
+//   // };
+//   User.find({SKUId:skuid}).then((data)=>{
+//     res.status(200).json(data);
+//   })
+// }
+// }
 exports.del = async (req, res) => {
   User.deleteMany({ productId: req.body.productId }).then((data) => {
     res.status(200).json(data);
   });
   console.log(req.body);
+};
+
+exports.checkout = async (req, res) => {
+  const items = req.body.items;
+
+  console.log(items, "aman");
+  let count = 10;
+  for (let i = 0; i < items.length; i++) {
+    const skuid = items[i].id;
+
+    await Stock.findOne({ SKUId: skuid }).then((data) => {
+      console.log(data);
+      if (data.Quantity - items[i].quantity >=0) {
+        const user = {
+          $inc: {
+            Quantity: -items[i].quantity,
+          },
+        };
+        Stock.updateOne({ SKUId: skuid }, user);
+      } else {
+        console.log("quantity can't be zero");
+        
+        // res.send("order is out of stock");
+        // count.push(0);
+        // res.send("Order is out of stock");
+        myFunction()
+
+        // send1(0);
+      }
+    });
+  }
+  function myFunction(){
+        return count--;
+    }
+    let nmk = myFunction();
+    console.log(nmk);
+ if(nmk!=10){
+  res.send('Not Available');
+ }else{
+  res.send('Available')
+ }
 };
 
 // exports.stock = await users.find({}).toArray(function(err, result) {
