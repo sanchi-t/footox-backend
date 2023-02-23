@@ -19,20 +19,29 @@ const bodyParser = require('body-parser');
 const couponRoutes = require('./routes/couponRoutes');
 const linkRoutes =require('./routes/linkRoutes')
 
+const Port = process.env.PORT || 4000;
+const db = process.env.DATABASE;
+const frontend_server = process.env.FRONTEND_SERVER;
+const backend_server = process.env.BACKEND_SERVER;
+
+console.log(frontend_server, 'asdf')
+
 // console.log('hi');
 
 
 app.use(cors({
-    origin:["http://localhost:3001","http://localhost:3000"],
+    origin:[frontend_server,backend_server],
 }));
 
 
 
 app.set('view engine', 'ejs');
 
-const dbURI= 'mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority';
+const dbURI= 'mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority' ;
 mongoose.connect (dbURI, { useNewUrlParser : true, useUnifiedTopology: true})
-.then((result) => app.listen (4000))
+.then((result) => app.listen (Port, ()=>{
+    console.log(`Server is listening on port ${Port}`);
+}))
 .catch((err) => console . log(err));
 
 
@@ -41,6 +50,7 @@ app.get('/', (req, res) => res.render('home'));
 app.use(express.static('public'));
 
 console.log("I am runing");
+console.log(Port);
 
 
 app.use(express.json());

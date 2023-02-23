@@ -203,11 +203,13 @@ exports.checkout = async (req, res) => {
 
   console.log(items, "aman");
   let count = 10;
+  let count1 = 10;
   for (let i = 0; i < items.length; i++) {
     const skuid = items[i].id;
 
     await Stock.findOne({ SKUId: skuid }).then((data) => {
       console.log(data);
+      if(data != null){
       if (data.Quantity - items[i].quantity >=0) {
         const user = {
           $inc: {
@@ -224,18 +226,32 @@ exports.checkout = async (req, res) => {
         myFunction()
 
         // send1(0);
+      }}else{
+        myFunction1()
+
       }
     });
   }
   function myFunction(){
         return count--;
     }
+
+    function myFunction1(){
+      return count1--;
+  }
     let nmk = myFunction();
+    let outOfstock = myFunction1();
     console.log(nmk);
- if(nmk!=10){
-  res.send('Not Available');
+
+
+ if(outOfstock!= 10){
+  res.send("Not Available");
  }else{
-  res.send('Available')
+  if(nmk!=10){
+    res.send('Not Available');
+   }else{
+    res.send('Available')
+   }
  }
 };
 

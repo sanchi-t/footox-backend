@@ -163,14 +163,6 @@ module.exports.google_login_onetap = async (req, res) => {
     
 }
 
-
-module.exports.userDetails = async (req, res) =>{
-  console.log(req.query);
-  User.find().then((data) => {
-    res.status(200).json(data);
-  });
-}
-
 // module.exports.logout_get = (req, res) => {
 //   res.cookie('jwt', '', { maxAge: 1 });
 //   res.redirect('/');
