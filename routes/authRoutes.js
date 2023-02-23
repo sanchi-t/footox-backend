@@ -9,6 +9,7 @@ router.post('/login',authController.login_post);
 router.post('/auth',valid.checkUser);
 router.post('/googlelogin',authController.google_login);
 router.post('/googleloginonetap',authController.google_login_onetap);
+router.get('/userDetails',authController.userDetails );
 
 
 
