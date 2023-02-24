@@ -6,7 +6,7 @@ const Cart = require("../models/cart");
 const Address = require("../models/address");
 
 
-const client = new OAuth2Client("907385226953-mc9c2r4j8t9nmne9dch68s65tmkq2gqg.apps.googleusercontent.com");
+const client = new OAuth2Client(process.env.GOOGLE_API_KEY);
 
 const afterVerify=(name,email,username,mobile,description,res )=>{
   User.findOne({email}).exec(async (err,result)=>{
@@ -17,7 +17,7 @@ const afterVerify=(name,email,username,mobile,description,res )=>{
       if(result){
 
         try {
-            let password=email+'907385226953-mc9c2r4j8t9nmne9dch68s65tmkq2gqg.apps.googleusercontent.com';
+            let password=email+process.env.GOOGLE_API_KEY;
             const user = await User.login(email, password);
             const token = createToken(user._id);
             res.cookie('jwt', token, { httpOnly: false, maxAge: maxAge * 1000 });
@@ -32,7 +32,7 @@ const afterVerify=(name,email,username,mobile,description,res )=>{
       }
       else{
         try {
-          let password=email+'907385226953-mc9c2r4j8t9nmne9dch68s65tmkq2gqg.apps.googleusercontent.com';
+          let password=email+process.env.GOOGLE_API_KEY;
           const user = await User.create({name,email, password,username,mobile,description });
           const cart = await Cart.create({name,email});
           const address = await Address.create({name,email});
@@ -141,7 +141,7 @@ module.exports.google_login = async (req, res) => {
   
   const tokenId=req.body.payload
   // console.log(tokenId);
-  client.verifyIdToken({idToken:tokenId,audience:'907385226953-mc9c2r4j8t9nmne9dch68s65tmkq2gqg.apps.googleusercontent.com'}).then(response=>{
+  client.verifyIdToken({idToken:tokenId,audience:process.env.GOOGLE_API_KEY}).then(response=>{
     const {email_verified,name,email,username,mobile,description }=response.payload;
     // console.log(email_verified,name,email,'response');
     if(email_verified){
