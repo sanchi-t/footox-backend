@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const csv = require("fast-csv");
-const User = require("../Models/Sku1");
+const User = require("../models/Sku1");
 const express = require("express");
 const router = express.Router();
 // const data1 = require("../Models/models")
