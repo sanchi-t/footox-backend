@@ -32,7 +32,7 @@ console.log(frontend_server, 'asdf')
 
 
 app.use(cors({
-    origin:["http://localhost:3000",backend_server],
+    origin:[frontend_server,backend_server],
 }));
 
 
