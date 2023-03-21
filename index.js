@@ -26,7 +26,8 @@ const db = process.env.DATABASE;
 const frontend_server = process.env.FRONTEND_SERVER;
 const backend_server = process.env.BACKEND_SERVER;
 
-console.log(frontend_server, 'asdf')
+console.log(frontend_server, 'asdf123')
+console.log(backend_server, 'asdf11')
 
 // console.log('hi');
 
