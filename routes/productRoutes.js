@@ -18,5 +18,6 @@ router.post('/admin1', urlencodedParser, function (req, res) {
     
 });
 
+router.get('/products', productController.getProducts);
 
 module.exports=router;

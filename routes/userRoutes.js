@@ -47,7 +47,7 @@ router.post("/admin3", upload.array("image", 50), (req, res, next) => {
   for (var i = 1; i < req.files.length+1; i++) {
 
     temp.push(url + "/public/" + req.files[i-1].filename);
-    if(i%4===0){
+    if(i%5===0){
         all.push(temp);
          temp=[];
         
