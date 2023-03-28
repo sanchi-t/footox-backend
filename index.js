@@ -10,6 +10,7 @@ const bannerRoutes = require('./routes/bannerRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const orderPlacedRoutes = require('./routes/orderPlacedRoutes');
+const offerBannerRoutes = require('./routes/offerBannerRoutes');
 // const orderConfirmedRoutes = require('./routes/orderConfirmedRoutes');
 const csvRoutes=require('./routes/csvRoutes');
 
@@ -67,6 +68,7 @@ app.use(linkRoutes);
 app.use(checkoutRoutes);
 app.use(addressRoutes);
 app.use(orderPlacedRoutes);
+app.use(offerBannerRoutes);
 // app.use(orderConfirmedRoutes);
 app.use(csvRoutes);
 app.use(cookieParser());
