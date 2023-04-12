@@ -22,11 +22,14 @@ const product=async function(toUpdate,res){
         users.deleteOne( { id: toUpdate.id } )
         console.log('deleted');
     }
-    const product_data = await users.find({}).toArray(function(err, result) {
+    const product_data = await users.find().toArray(function(err, result) {
         if (err) throw err;
-        res.json(result); 
+       console.log(result,"asdfg");
+        
         
     });
+    res.json(product_data); 
+    // console.log(product_data)
     
     return;
 
@@ -58,6 +61,7 @@ const category=async function(req,res){
 
 
 module.exports.banner_get = (req, res) => {
+    console.log('adsfdghgmhg');
     product(null,res);
 }
 

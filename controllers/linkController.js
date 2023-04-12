@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 
-const dbURI= 'mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority';
+const dbURI= process.env.DATABASE;
 
 
 const client = new MongoClient(dbURI);

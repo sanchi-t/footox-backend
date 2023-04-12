@@ -15,6 +15,7 @@ router.post('/admin1', urlencodedParser, function (req, res) {
     const jsondata= Object.keys(obj)[0];
     const toUpdate=JSON.parse((jsondata));
     productController.admin_post(toUpdate,res);
+    console.log('Hey aman')
     
 });
 

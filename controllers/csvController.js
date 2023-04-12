@@ -8,8 +8,8 @@ const router = express.Router();
 const MongoClient = require("mongodb").MongoClient;
 const mongoose = require("mongoose");
 const { json } = require("body-parser");
-const dbURI =
-  "mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority";
+const dbURI= 'mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority';
+
 
 const client = new MongoClient(dbURI);
 const database = client.db("Footox");
@@ -174,6 +174,37 @@ exports.stock = async (req, res) => {
     res.status(200).json(data);
   });
 };
+
+// const Memcached = require('memcached');
+// const memcached = new Memcached('localhost:11211');
+
+// exports.stock = async (req, res) => {
+//   const cacheKey = 'stock';
+//   memcached.get(cacheKey, function(err, cachedData) {
+//     if (err) {
+//       console.error('Error getting cached data', err);
+//     }
+//     if (cachedData) {
+//       console.log('Retrieved cached data of Stock');
+//       res.status(200).json(cachedData);
+//     } else {
+//       User.find().then((data) => {
+//         // Store the data in cache for 5 minutes
+//         memcached.set(cacheKey, data, 300, function(err) {
+//           if (err) {
+//             console.error('Error setting cache data', err);
+//           } else {
+//             console.log('Stored data in cache of Stock');
+//           }
+//         });
+//         res.status(200).json(data);
+//       }).catch((err) => {
+//         console.error('Error fetching data', err);
+//         res.status(500).json({ error: 'Error fetching data' });
+//       });
+//     }
+//   });
+// };
 
 // exports.skuid = async(req, res)=>{
 //   const items = req.body.items;

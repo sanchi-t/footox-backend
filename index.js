@@ -1,6 +1,10 @@
 const express = require('express');
 const mongoose = require ("mongoose");
 const app = express();
+const jwt = require('jsonwebtoken');
+const path = require('path');
+const adminUserRoute = require('./routes/adminUserRoutes');
+const adminUser = require('./models/adminUser');
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -18,13 +22,13 @@ const cors=require('cors');
 const bodyParser = require('body-parser');
 const couponRoutes = require('./routes/couponRoutes');
 const linkRoutes =require('./routes/linkRoutes')
-
+require('dotenv').config();
 const Port = process.env.PORT || 4000;
 const db = process.env.DATABASE;
 const frontend_server = process.env.FRONTEND_SERVER;
 const backend_server = process.env.BACKEND_SERVER;
 
-console.log(frontend_server, 'asdf')
+console.log(db, 'asdf')
 
 // console.log('hi');
 
@@ -37,13 +41,27 @@ app.use(cors({
 
 app.set('view engine', 'ejs');
 
-const dbURI= 'mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority' ;
+const dbURI= db;
+
 mongoose.connect (dbURI, { useNewUrlParser : true, useUnifiedTopology: true})
-.then((result) => app.listen (Port, ()=>{
-    console.log(`Server is listening on port ${Port}`);
-}))
+.then((result) => app.listen (Port, () => {
+    console.log(`Server is listening on port ${Port}`);} ))
 .catch((err) => console . log(err));
 
+
+// app.use(async (req, res, next) => {
+//     if (req.headers["x-access-token"]) {
+//      const accessToken = req.headers["x-access-token"];
+//      const { userId, exp } = await jwt.verify(accessToken, process.env.JWT_SECRET);
+//      // Check if token has expired
+//      if (exp < Date.now().valueOf() / 1000) { 
+//       return res.status(401).json({ error: "JWT token has expired, please login to obtain a new one" });
+//      } 
+//      res.locals.loggedInUser = await adminUser.findById(userId); next(); 
+//     } else { 
+//      next(); 
+//     } 
+//    });
 
 // app.get('*', checkUser);
 app.get('/', (req, res) => res.render('home'));
@@ -66,5 +84,6 @@ app.use(addressRoutes);
 app.use(orderPlacedRoutes);
 // app.use(orderConfirmedRoutes);
 app.use(csvRoutes);
+app.use(adminUserRoute);
 app.use(cookieParser());
 // app.use(checkUser);

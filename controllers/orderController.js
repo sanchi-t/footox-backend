@@ -2,7 +2,7 @@ let User = require('../models/order');
 const MongoClient = require("mongodb").MongoClient;
 const mongoose = require("mongoose");
 const dbURI =
-  "mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority";
+process.env.DATABASE;
 
 const client = new MongoClient(dbURI);
 const database = client.db("Footox");
