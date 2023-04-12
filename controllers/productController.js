@@ -7,6 +7,8 @@ const dbURI= process.env.DATABASE;
 const client = new MongoClient(dbURI);
 
 
+const database = client.db("Footox");
+const Stock = database.collection("stock details");
 
 
 const product=async function(toUpdate,res){
@@ -133,7 +135,18 @@ module.exports.getProducts = async (req, res) => {
     const products = await Product.find(filter).skip(skip).limit(productsPerPage).toArray();
     // const resu=await Product.find({ category: "Sports" }).explain("executionStats");
    
-    const category = await Product.distinct('category');
+    const category1 = await Product.distinct('category');
+    const filteredCategory = category1.filter((element) => {
+      return typeof element === 'string' && /^[a-zA-Z\s]+$/.test(element);
+    });
+    const category = filteredCategory.map((element) => {
+      const words = element.split(' ');
+      const capitalizedWords = words.map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      });
+      return capitalizedWords.join(' ');
+    });
+    // console.log(category);
     const totalProducts = await Product.countDocuments(filter);
     // console.log(filter,resu);
 
@@ -141,6 +154,63 @@ module.exports.getProducts = async (req, res) => {
     res.json({ products, totalProducts, category });
   };
 
+  module.exports.getOneProduct = async (req, res) => {
+    const database = client.db("Footox");
+    const Product = database.collection("data");
+
+
+
+    const { productId } = req.query;
+  
+    
+  
+    const products = await Product.findOne({'productId':productId});
+    // const resu=await Product.find({ category: "Sports" }).explain("executionStats");
+   
+
+    
+    // console.log(category);
+    // console.log(products,productId);
+
+
+    res.json({ products });
+  };
+
+
+
+  module.exports.getAvailableSizes = async (req, res) => {
+    const database = client.db("Footox");
+    const Product = database.collection("data");
+
+
+
+    const { skuId } = req.query;
+    // console.log(skuId);
+    const [productId, color, size] = skuId.split("/");
+
+    const result = await Stock.find({
+      SKUId: { $regex: `${productId}/${color}/\\d+` },
+      Quantity: { $ne: 0 },
+    }).toArray();
+
+
+    const sizes = result.map((item) => item.SKUId.split("/")[2]);
+
+    // console.log(sizes);
+  
+    
+  
+    // const products = await Product.findOne({'productId':productId});
+    // // const resu=await Product.find({ category: "Sports" }).explain("executionStats");
+   
+
+    
+    // // console.log(category);
+    // // console.log(products,productId);
+
+
+    res.json({ sizes });
+  };
 
 
 
