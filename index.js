@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require ("mongoose");
 const app = express();
@@ -13,6 +14,7 @@ const bannerRoutes = require('./routes/bannerRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const orderPlacedRoutes = require('./routes/orderPlacedRoutes');
+const offerBannerRoutes = require('./routes/offerBannerRoutes');
 // const orderConfirmedRoutes = require('./routes/orderConfirmedRoutes');
 const csvRoutes=require('./routes/csvRoutes');
 
@@ -21,14 +23,16 @@ const cookieParser=require('cookie-parser');
 const cors=require('cors');
 const bodyParser = require('body-parser');
 const couponRoutes = require('./routes/couponRoutes');
+
 const linkRoutes =require('./routes/linkRoutes')
 require('dotenv').config();
-const Port = process.env.PORT || 4000;
+const Port = process.env.PORT;
 const db = process.env.DATABASE;
 const frontend_server = process.env.FRONTEND_SERVER;
 const backend_server = process.env.BACKEND_SERVER;
 
-console.log(db, 'asdf')
+console.log(db, 'asdf123')
+console.log(backend_server, 'asdf11')
 
 // console.log('hi');
 
@@ -41,8 +45,7 @@ app.use(cors({
 
 app.set('view engine', 'ejs');
 
-const dbURI= db;
-
+const dbURI= process.env.DATABASE ;
 mongoose.connect (dbURI, { useNewUrlParser : true, useUnifiedTopology: true})
 .then((result) => app.listen (Port, () => {
     console.log(`Server is listening on port ${Port}`);} ))
@@ -82,6 +85,7 @@ app.use(linkRoutes);
 app.use(checkoutRoutes);
 app.use(addressRoutes);
 app.use(orderPlacedRoutes);
+app.use(offerBannerRoutes);
 // app.use(orderConfirmedRoutes);
 app.use(csvRoutes);
 app.use(adminUserRoute);

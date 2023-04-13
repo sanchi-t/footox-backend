@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
     minlength: [10, 'Minimum password length is 10 digits'],
   },
   items: {
-    type: Array,
+    type: Object,
     required: [true],
     
   },
@@ -63,6 +63,19 @@ const userSchema = new mongoose.Schema({
   status: {
     type: String,
     required:[false]
+  },
+  return: {
+    type: Boolean,
+    required:[false]
+  },
+  exchange: {
+    type: Boolean,
+    required:[false]
+  },
+  exchange_details: {
+    type: Object,
+    // required: [true],
+    
   },
   
 },{

@@ -1,9 +1,14 @@
-const MongoClient = require("mongodb").MongoClient;
+const MongoClient = require('mongodb').MongoClient;
+const Fuse = require('fuse.js');
 
-const dbURI =
-  "mongodb+srv://sanchit:diehardfan@cluster0.lxmxcq5.mongodb.net/Footox?retryWrites=true&w=majority";
+const dbURI= process.env.DATABASE;
+
 
 const client = new MongoClient(dbURI);
+
+
+const database = client.db("Footox");
+const Stock = database.collection("stock details");
 const Memcached = require("memcached");
 const memcached = new Memcached("localhost:11211");
 const cacheKey = "getImage";
@@ -135,6 +140,127 @@ module.exports.admin_post = async (toUpdate, res) => {
   product(toUpdate, res);
 };
 
-// module.exports.adminAdd_post = async (toAdd, res) => {
-//     addProduct(toAdd,res)
-// }
+
+module.exports.getProducts = async (req, res) => {
+    const database = client.db("Footox");
+    const Product = database.collection("data");
+
+
+
+    const { page, limit } = req.query;
+    const query=JSON.parse(req.query.query)
+  
+    // Calculate skip and limit values
+    const skip = (page - 1) * limit;
+    const productsPerPage = parseInt(limit);
+    const filter = {};
+    if (query.productName) {
+        const options = {
+          includeScore: true,
+          keys: ['productName'],
+          threshold: 0.4 // adjust the threshold value to control the fuzziness
+        };
+        const products=await Product.find().toArray();
+        // console.log(products);
+        const fuse = new Fuse(products, options);
+        const fuzzyResult = fuse.search(query.productName);
+        const fuzzyProductName = fuzzyResult.map(({ item }) => item.productName);
+        filter.productName = { $in: fuzzyProductName };
+      }
+    if (query.category && query.category.length > 0) {
+      filter.category = { $in: query.category };
+    }
+    
+    if (query.colors && query.colors.length > 0) {
+      filter.color = { $elemMatch: { $in: query.colors } };
+    }
+    if (query.sizes && query.sizes.length > 0) {
+      filter.Sizes = {
+        $elemMatch: {
+          $elemMatch: { $in: query.sizes }
+        }
+      };
+    }
+  
+  
+    // Query database for products
+    const products = await Product.find(filter).skip(skip).limit(productsPerPage).toArray();
+    // const resu=await Product.find({ category: "Sports" }).explain("executionStats");
+   
+    const category1 = await Product.distinct('category');
+    const filteredCategory = category1.filter((element) => {
+      return typeof element === 'string' && /^[a-zA-Z\s]+$/.test(element);
+    });
+    const category = filteredCategory.map((element) => {
+      const words = element.split(' ');
+      const capitalizedWords = words.map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      });
+      return capitalizedWords.join(' ');
+    });
+    // console.log(category);
+    const totalProducts = await Product.countDocuments(filter);
+    // console.log(filter,resu);
+
+
+    res.json({ products, totalProducts, category });
+  };
+
+  module.exports.getOneProduct = async (req, res) => {
+    const database = client.db("Footox");
+    const Product = database.collection("data");
+
+
+
+    const { productId } = req.query;
+  
+    
+  
+    const products = await Product.findOne({'productId':productId});
+    // const resu=await Product.find({ category: "Sports" }).explain("executionStats");
+   
+
+    
+    // console.log(category);
+    // console.log(products,productId);
+
+
+    res.json({ products });
+  };
+
+
+
+  module.exports.getAvailableSizes = async (req, res) => {
+    const database = client.db("Footox");
+    const Product = database.collection("data");
+
+
+
+    const { skuId } = req.query;
+    // console.log(skuId);
+    const [productId, color, size] = skuId.split("/");
+
+    const result = await Stock.find({
+      SKUId: { $regex: `${productId}/${color}/\\d+` },
+      Quantity: { $ne: 0 },
+    }).toArray();
+
+
+    const sizes = result.map((item) => item.SKUId.split("/")[2]);
+
+    // console.log(sizes);
+  
+    
+  
+    // const products = await Product.findOne({'productId':productId});
+    // // const resu=await Product.find({ category: "Sports" }).explain("executionStats");
+   
+
+    
+    // // console.log(category);
+    // // console.log(products,productId);
+
+
+    res.json({ sizes });
+  };
+
