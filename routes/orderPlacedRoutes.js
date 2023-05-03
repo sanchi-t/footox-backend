@@ -9,6 +9,8 @@ router.get("/getOrderUser",orderPlacedController.getOrderUser);
 router.post("/postOrderReturn",orderPlacedController.postOrderReturn);
 router.post("/postOrderCancel",orderPlacedController.postOrderCancel);
 router.post("/postOrderExchange",orderPlacedController.postOrderExchange);
+router.get("/getReturnOrder", orderPlacedController.getReturnOrder);
+router.get("/getExchangeOrder", orderPlacedController.getExchangeOrder);
 
 
 // router.get("/getOrderUser",orderPlacedController.getOrderUser);

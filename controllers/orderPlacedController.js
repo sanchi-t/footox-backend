@@ -81,61 +81,61 @@ exports.order = async (req, res) => {
   //   coupon: req.body.form.coupon,
   //   total: req.body.form.total,
   // });
-  user
-    .save()
-    .then((result) => {
-      console.log(result),
-        res.status(201).json({
-          order: {
-            result,
-          },
-        });
-    })
-    .catch((err) => {
-      console.log(err),
-        res.status(500).json({
-          error: err,
-        });
-    });
+  // user
+  //   .save()
+  //   .then((result) => {
+  //     console.log(result),
+  //       res.status(201).json({
+  //         order: {
+  //           result,
+  //         },
+  //       });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err),
+  //       res.status(500).json({
+  //         error: err,
+  //       });
+  //   });
 };
-// exports.getOrder = async (req, res) => {
-//     User.find().then((data) => {
-//         // console.log(data);
-//       res.status(200).json(data);
-//     });
-//   };
-
-const Memcached = require("memcached");
-const memcached = new Memcached("localhost:11211");
-const cacheKey = "getOrder";
 exports.getOrder = async (req, res) => {
-  memcached.get(cacheKey, function (err, cachedData) {
-    if (err) {
-      console.error("Error getting cached data", err);
-    }
-    if (cachedData) {
-      console.log("Retrieved cached data of Order ");
-      res.status(200).json(cachedData);
-    } else {
-      User.find()
-        .then((data) => {
-          // Store the data in cache for 5 minutes
-          memcached.set(cacheKey, data, 180, function (err) {
-            if (err) {
-              console.error("Error setting cache data", err);
-            } else {
-              console.log("Stored data in cache in Order");
-            }
-          });
-          res.status(200).json(data);
-        })
-        .catch((err) => {
-          console.error("Error fetching data", err);
-          res.status(500).json({ error: "Error fetching data" });
-        });
-    }
-  });
-};
+    User.find().then((data) => {
+        // console.log(data);
+      res.status(200).json(data);
+    });
+  };
+
+// const Memcached = require("memcached");
+// const memcached = new Memcached("localhost:11211");
+// const cacheKey = "getOrder";
+// exports.getOrder = async (req, res) => {
+//   memcached.get(cacheKey, function (err, cachedData) {
+//     if (err) {
+//       console.error("Error getting cached data", err);
+//     }
+//     if (cachedData) {
+//       console.log("Retrieved cached data of Order ");
+//       res.status(200).json(cachedData);
+//     } else {
+//       User.find()
+//         .then((data) => {
+//           // Store the data in cache for 5 minutes
+//           memcached.set(cacheKey, data, 180, function (err) {
+//             if (err) {
+//               console.error("Error setting cache data", err);
+//             } else {
+//               console.log("Stored data in cache in Order");
+//             }
+//           });
+//           res.status(200).json(data);
+//         })
+//         .catch((err) => {
+//           console.error("Error fetching data", err);
+//           res.status(500).json({ error: "Error fetching data" });
+//         });
+//     }
+//   });
+// };
 
 exports.updateOrder = async (req, res) => {
   console.log(req.body.orderid);
@@ -148,35 +148,35 @@ exports.updateOrder = async (req, res) => {
       status: req.body.Status,
     },
   };
-  memcached.get(cacheKey, function (err, cachedData) {
-    const index = cachedData.findIndex((obj) => obj._id === req.body.orderid);
+  // memcached.get(cacheKey, function (err, cachedData) {
+  //   const index = cachedData.findIndex((obj) => obj._id === req.body.orderid);
 
-    console.log(index);
-    console.log(cachedData, "before");
-    users
-      .findOneAndUpdate(filter, toUpdate, { returnDocument: "after" })
-      .then((data) => {
-        res.status(200).json(data);
-        if (index != -1) {
-          cachedData[index] = data.value;
-        }
-        memcached.set(cacheKey, cachedData, 180, function (err) {
-          if (err) {
-            console.error("Error setting cache data", err);
-          } else {
-            console.log("Stored data in cache in Order");
-          }
-        });
-      });
-  });
+  //   console.log(index);
+  //   console.log(cachedData, "before");
+  //   users
+  //     .findOneAndUpdate(filter, toUpdate, { returnDocument: "after" })
+  //     .then((data) => {
+  //       res.status(200).json(data);
+  //       if (index != -1) {
+  //         cachedData[index] = data.value;
+  //       }
+  //       memcached.set(cacheKey, cachedData, 180, function (err) {
+  //         if (err) {
+  //           console.error("Error setting cache data", err);
+  //         } else {
+  //           console.log("Stored data in cache in Order");
+  //         }
+  //       });
+  //     });
+  // });
   // console.log(ordersss, "asdcfvgbhnj");
   //updating
-  // users
-  //   .findOneAndUpdate(filter, toUpdate, { returnDocument: "after" })
-  //   .then((data) => {
-  //     res.status(200).json(data);
-  //     console.log(data.value, 'updated');
-  //   });
+  users
+    .findOneAndUpdate(filter, toUpdate, { returnDocument: "after" })
+    .then((data) => {
+      res.status(200).json(data);
+      console.log(data.value, 'updated');
+    });
 };
 
 exports.getOrderUser = async (req, res) => {
@@ -237,6 +237,12 @@ exports.postOrderReturn = async (req, res) => {
   } catch (e) {
     console.log("e");
   }
+};
+
+exports.getReturnOrder = async (req, res) => {
+  Return.find().then((data) => {
+    res.status(200).json(data);
+  });
 };
 
 exports.postOrderCancel = async (req, res) => {
@@ -306,4 +312,10 @@ exports.postOrderExchange = async (req, res) => {
   } catch (e) {
     console.log("e", e);
   }
+};
+
+exports.getExchangeOrder = async (req, res) => {
+  Exchange.find().then((data) => {
+    res.status(200).json(data);
+  });
 };
